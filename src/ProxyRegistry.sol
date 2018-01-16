@@ -2,14 +2,14 @@ pragma solidity ^0.4.18;
 
 import 'ds-proxy/proxy.sol';
 
-// ProxyDirectory
-// This Directory deploys new proxy instances through DSProxyFactory.build(address) and keeps a directory of owner => proxies
-contract ProxyDirectory {
+// ProxyRegistry
+// This Registry deploys new proxy instances through DSProxyFactory.build(address) and keeps a registry of owner => proxies
+contract ProxyRegistry {
     mapping(address=>DSProxy[]) public proxies;
     mapping(address=>uint) public proxiesCount;
     DSProxyFactory factory;
 
-    function ProxyDirectory(DSProxyFactory factory_) public {
+    function ProxyRegistry(DSProxyFactory factory_) public {
         factory = factory_;
     }
 

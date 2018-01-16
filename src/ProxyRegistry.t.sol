@@ -2,19 +2,19 @@ pragma solidity ^0.4.18;
 
 import "ds-test/test.sol";
 
-import "./ProxyDirectory.sol";
+import "./ProxyRegistry.sol";
 
-contract ProxyDirectoryTest is DSTest {
-    ProxyDirectory directory;
+contract ProxyRegistryTest is DSTest {
+    ProxyRegistry registry;
     DSProxyFactory factory;
 
     function setUp() public {
         factory = new DSProxyFactory();
-        directory = new ProxyDirectory(factory);
+        registry = new ProxyRegistry(factory);
     }
 
-	function test_ProxyDirectoryBuild() public {
-		address proxyAddr = directory.build();
+	function test_ProxyRegistryBuild() public {
+		address proxyAddr = registry.build();
 		assertTrue(proxyAddr > 0x0);
 		DSProxy proxy = DSProxy(proxyAddr);
 
@@ -31,13 +31,13 @@ contract ProxyDirectoryTest is DSTest {
 		//verify proxy ownership
 		assertEq(proxy.owner(), this);
 
-        assertEq(directory.proxiesCount(this), 1);
-        assertEq(directory.proxies(this, 0), proxy);
+        assertEq(registry.proxiesCount(this), 1);
+        assertEq(registry.proxies(this, 0), proxy);
 	}
 
-    function test_ProxyDirectoryBuildOtherOwner() public {
+    function test_ProxyRegistryBuildOtherOwner() public {
 		address owner = address(0x123);
-		address proxyAddr = directory.build(owner);
+		address proxyAddr = registry.build(owner);
 		assertTrue(proxyAddr > 0x0);
 		DSProxy proxy = DSProxy(proxyAddr);
 
@@ -54,7 +54,7 @@ contract ProxyDirectoryTest is DSTest {
 		//verify proxy ownership
 		assertEq(proxy.owner(), owner);
 
-        assertEq(directory.proxiesCount(owner), 1);
-        assertEq(directory.proxies(owner, 0), proxy);
+        assertEq(registry.proxiesCount(owner), 1);
+        assertEq(registry.proxies(owner, 0), proxy);
 	}
 }
