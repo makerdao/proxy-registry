@@ -31,8 +31,7 @@ contract ProxyRegistryTest is DSTest {
 		//verify proxy ownership
 		assertEq(proxy.owner(), this);
 
-        assertEq(registry.proxiesCount(this), 1);
-        assertEq(registry.proxies(this, 0), proxy);
+        assertEq(registry.proxies(this), proxy);
 	}
 
     function test_ProxyRegistryBuildOtherOwner() public {
@@ -54,7 +53,27 @@ contract ProxyRegistryTest is DSTest {
 		//verify proxy ownership
 		assertEq(proxy.owner(), owner);
 
-        assertEq(registry.proxiesCount(owner), 1);
-        assertEq(registry.proxies(owner, 0), proxy);
+        assertEq(registry.proxies(owner), proxy);
+	}
+
+	function test_ProxyRegistryCreateNewProxy() public {
+		address proxyAddr = registry.build();
+		assertTrue(proxyAddr > 0x0);
+		assertEq(proxyAddr, registry.proxies(this));
+		DSProxy(proxyAddr).setOwner(0);
+		address proxyAddr2 = registry.build();
+		assertTrue(proxyAddr != proxyAddr2);
+		assertEq(proxyAddr2, registry.proxies(this));
+	}
+
+	function testFail_ProxyRegistryCreateNewProxy() public {
+		registry.build();
+		registry.build();
+	}
+
+	function testFail_ProxyRegistryCreateNewProxy2() public {
+		address owner = address(0x123);
+		registry.build(owner);
+		registry.build(owner);
 	}
 }
