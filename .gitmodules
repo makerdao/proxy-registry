@@ -3,4 +3,4 @@
 	url = https://github.com/dapphub/ds-test
 [submodule "lib/ds-proxy"]
 	path = lib/ds-proxy
-	url = https://github.com/dapphub/ds-proxy/
+	url = https://github.com/dapphub/ds-proxy
