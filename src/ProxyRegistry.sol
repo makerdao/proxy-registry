@@ -9,7 +9,7 @@ contract ProxyRegistry {
     mapping(address=>uint) public proxiesCount;
     DSProxyFactory factory;
 
-    function ProxyRegistry(DSProxyFactory factory_) public {
+    constructor(DSProxyFactory factory_) public {
         factory = factory_;
     }
 
