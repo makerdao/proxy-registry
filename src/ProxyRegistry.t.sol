@@ -1,4 +1,4 @@
-pragma solidity ^0.4.23;
+pragma solidity >=0.5.0;
 
 import "ds-test/test.sol";
 
@@ -10,12 +10,12 @@ contract ProxyRegistryTest is DSTest {
 
     function setUp() public {
         factory = new DSProxyFactory();
-        registry = new ProxyRegistry(factory);
+        registry = new ProxyRegistry(address(factory));
     }
 
-	function test_ProxyRegistryBuild() public {
-		address proxyAddr = registry.build();
-		assertTrue(proxyAddr > 0x0);
+    function test_ProxyRegistryBuild() public {
+		address payable proxyAddr = registry.build();
+		assertTrue(proxyAddr != address(0));
 		DSProxy proxy = DSProxy(proxyAddr);
 
 		uint codeSize;
@@ -29,15 +29,15 @@ contract ProxyRegistryTest is DSTest {
 		assertTrue(factory.isProxy(proxyAddr));
 
 		//verify proxy ownership
-		assertEq(proxy.owner(), this);
+		assertEq(proxy.owner(), address(this));
 
-        assertEq(registry.proxies(this), proxy);
+		assertEq(address(registry.proxies(address(this))), proxyAddr);
 	}
 
-    function test_ProxyRegistryBuildOtherOwner() public {
+	function test_ProxyRegistryBuildOtherOwner() public {
 		address owner = address(0x123);
-		address proxyAddr = registry.build(owner);
-		assertTrue(proxyAddr > 0x0);
+		address payable proxyAddr = registry.build(owner);
+		assertTrue(proxyAddr != address(0));
 		DSProxy proxy = DSProxy(proxyAddr);
 
 		uint codeSize;
@@ -53,17 +53,17 @@ contract ProxyRegistryTest is DSTest {
 		//verify proxy ownership
 		assertEq(proxy.owner(), owner);
 
-        assertEq(registry.proxies(owner), proxy);
+		assertEq(address(registry.proxies(owner)), address(proxy));
 	}
 
 	function test_ProxyRegistryCreateNewProxy() public {
-		address proxyAddr = registry.build();
-		assertTrue(proxyAddr > 0x0);
-		assertEq(proxyAddr, registry.proxies(this));
-		DSProxy(proxyAddr).setOwner(0);
-		address proxyAddr2 = registry.build();
+		address payable proxyAddr = registry.build();
+		assertTrue(proxyAddr != address(0));
+		assertEq(proxyAddr, address(registry.proxies(address(this))));
+		DSProxy(proxyAddr).setOwner(address(0));
+		address payable proxyAddr2 = registry.build();
 		assertTrue(proxyAddr != proxyAddr2);
-		assertEq(proxyAddr2, registry.proxies(this));
+		assertEq(proxyAddr2, address(registry.proxies(address(this))));
 	}
 
 	function testFail_ProxyRegistryCreateNewProxy() public {
