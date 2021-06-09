@@ -4,3 +4,4 @@
 [submodule "lib/ds-proxy"]
 	path = lib/ds-proxy
 	url = https://github.com/dapphub/ds-proxy
+	branch = solc-0.6
