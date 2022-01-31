@@ -30,10 +30,12 @@ contract ProxyRegistry {
         factory = DSProxyFactory(factory_);
     }
 
-    function claim(address payable proxy) external {
+    function claim(address payable proxy, address prevOwner) external {
         require(proxies[msg.sender] == DSProxy(0) || proxies[msg.sender].owner() != msg.sender, "ProxyRegistry/proxy-registered-to-owner"); // Not allow new proxy if the user already has one and remains being the owner
         require(DSProxy(proxy).owner() == msg.sender, "ProxyRegistry/proxy-not-owned-by-caller");
+        require(proxies[prevOwner] == DSProxy(proxy), "ProxyRegistry/must-provide-a-valid-previous-owner");
 
+        proxies[prevOwner] = DSProxy(0);
         proxies[msg.sender] = DSProxy(proxy);
     }
 
