@@ -32,7 +32,7 @@ contract ProxyRegistry {
 
     function claim(address payable proxy, address src, address dst) external {
         require(proxies[dst] == DSProxy(0) || proxies[dst].owner() != dst, "ProxyRegistry/proxy-registered-to-owner"); // Not allow new proxy if the user already has one and remains being the owner
-        require(DSProxy(proxy).owner() == dst, "ProxyRegistry/proxy-not-owned-by-caller");
+        require(DSProxy(proxy).owner() == dst, "ProxyRegistry/proxy-not-owned-by-dst");
         require(proxies[src] == DSProxy(proxy), "ProxyRegistry/must-provide-a-valid-previous-owner");
 
         proxies[src] = DSProxy(0);
