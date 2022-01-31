@@ -10,10 +10,6 @@ contract Usr {
 	function transferProxy(DSProxy proxy, address dst) external {
 		proxy.setOwner(dst);
 	}
-
-	function claimProxy(ProxyRegistry registry, address payable proxyAddr, address prevOwner) external {
-		registry.claim(proxyAddr, prevOwner);	
-	}
 }
 
 contract ProxyRegistryTest is DSTest {
@@ -108,7 +104,7 @@ contract ProxyRegistryTest is DSTest {
 		assertEq(address(registry.proxies(address(usr1))), proxyAddr);
 		assertEq(address(registry.proxies(address(usr2))), address(0));
 
-		usr2.claimProxy(registry, proxyAddr, address(usr1));
+		registry.claim(proxyAddr, address(usr1), address(usr2));
 
 		assertEq(proxy.owner(), address(usr2));
 		// Registry now reports correctly for usr2
@@ -132,7 +128,7 @@ contract ProxyRegistryTest is DSTest {
 		
 		assertEq(address(registry.proxies(address(usr1))), proxyAddr);
 		
-		usr1.claimProxy(registry, proxyAddr, address(123));
+		registry.claim(proxyAddr, address(usr1), address(123));
 	}
 
 	function testFail_ClaimOtherProxy() public {
@@ -144,6 +140,6 @@ contract ProxyRegistryTest is DSTest {
 		
 		assertEq(address(registry.proxies(address(usr1))), proxyAddr);
 		
-		usr2.claimProxy(registry, proxyAddr, address(usr1));
+		registry.claim(proxyAddr, address(usr1), address(usr2));
 	}
 }
